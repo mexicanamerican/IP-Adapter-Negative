@@ -386,7 +386,12 @@ class IPAttnProcessor2_0(torch.nn.Module):
         ip_hidden_states = ip_hidden_states.transpose(1, 2).reshape(batch_size, -1, attn.heads * head_dim)
         ip_hidden_states = ip_hidden_states.to(query.dtype)
 
-        hidden_states = hidden_states + self.scale * ip_hidden_states
+        scales = torch.ones(ip_hidden_states.shape, dtype= ip_hidden_states.dtype)
+        scales[0:int(scales.shape[0]/2)] = self.scale[0]  # uncond
+        scales[int(scales.shape[0]/2):] = self.scale[1] # cond
+        scales = scales.to(hidden_states.device)
+
+        hidden_states = hidden_states + scales * ip_hidden_states
 
         # linear proj
         hidden_states = attn.to_out[0](hidden_states)

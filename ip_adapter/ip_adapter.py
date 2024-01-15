@@ -157,21 +157,37 @@ class IPAdapter:
         self,
         pil_image=None,
         clip_image_embeds=None,
+        negative_pil_image=None,
+        negative_clip_image_embeds=None,
         prompt=None,
         negative_prompt=None,
-        scale=1.0,
+        scale=1.0,  # weight for image prompt
+        scale_start = 0.0,
+        scale_stop = 1.0,        
+        scale_neg = 0.0, # weight for negative image prompt
+        scale_neg_start = 0.0,
+        scale_neg_stop = 1.0,
         num_samples=4,
         seed=None,
         guidance_scale=7.5,
         num_inference_steps=30,
         **kwargs,
     ):
-        self.set_scale(scale)
+        
+        # set scales for negative and positive image prompt
+        self.set_scale( (scale_neg if scale_neg_start == 0. else 0., scale if scale_start == 0. else 0.) )
+        self.pipe.ip_scale = scale
+        self.pipe.ip_scale_start = scale_start
+        self.pipe.ip_scale_stop = scale_stop
+        self.pipe.ip_scale_neg = scale
+        self.pipe.ip_scale_neg_start = scale_neg_start
+        self.pipe.ip_scale_neg_stop = scale_neg_stop
+        
 
         if pil_image is not None:
             num_prompts = 1 if isinstance(pil_image, Image.Image) else len(pil_image)
         else:
-            num_prompts = clip_image_embeds.size(0)
+            num_prompts = clip_image_embeds.size(0)        
 
         if prompt is None:
             prompt = "best quality, high quality"
@@ -189,6 +205,12 @@ class IPAdapter:
         bs_embed, seq_len, _ = image_prompt_embeds.shape
         image_prompt_embeds = image_prompt_embeds.repeat(1, num_samples, 1)
         image_prompt_embeds = image_prompt_embeds.view(bs_embed * num_samples, seq_len, -1)
+
+        if negative_pil_image is not None or negative_clip_image_embeds is not None:
+            print('use negative image')
+            uncond_image_prompt_embeds, _ = self.get_image_embeds(
+                pil_image=negative_pil_image, clip_image_embeds=negative_clip_image_embeds
+            )
         uncond_image_prompt_embeds = uncond_image_prompt_embeds.repeat(1, num_samples, 1)
         uncond_image_prompt_embeds = uncond_image_prompt_embeds.view(bs_embed * num_samples, seq_len, -1)
 
@@ -203,6 +225,24 @@ class IPAdapter:
             prompt_embeds = torch.cat([prompt_embeds_, image_prompt_embeds], dim=1)
             negative_prompt_embeds = torch.cat([negative_prompt_embeds_, uncond_image_prompt_embeds], dim=1)
 
+        def callback_weight_schedule(pipe, step_index, timestep, callback_kwargs):
+
+            # turn on ip scale when it is between start and stop
+            if step_index >= int(pipe.num_timesteps * pipe.ip_scale_start) and step_index <= int(pipe.num_timesteps * pipe.ip_scale_stop):
+                scale = pipe.ip_scale
+            else:
+                scale = 0
+
+            # turn on ip negative scale when it is between start and stop
+            if step_index >= int(pipe.num_timesteps * pipe.ip_scale_neg_start) and step_index <= int(pipe.num_timesteps * pipe.ip_scale_neg_stop):
+                scale_neg = pipe.ip_scale_neg
+            else:
+                scale_neg = 0
+
+            # update guidance_scale and prompt_embeds
+            self.set_scale((scale_neg, scale))
+            return callback_kwargs
+
         generator = torch.Generator(self.device).manual_seed(seed) if seed is not None else None
         images = self.pipe(
             prompt_embeds=prompt_embeds,
@@ -210,6 +250,7 @@ class IPAdapter:
             guidance_scale=guidance_scale,
             num_inference_steps=num_inference_steps,
             generator=generator,
+            callback_on_step_end= callback_weight_schedule,
             **kwargs,
         ).images
 

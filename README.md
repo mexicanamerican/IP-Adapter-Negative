@@ -1,3 +1,7 @@
+# IP-Adapter with negative image prompt (WIP)
+run `demo.ipynb` for a GUI. 
+
+
 # ___***IP-Adapter: Text Compatible Image Prompt Adapter for Text-to-Image Diffusion Models***___
 
 <a href='https://ip-adapter.github.io'><img src='https://img.shields.io/badge/Project-Page-green'></a> 
