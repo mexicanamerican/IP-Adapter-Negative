@@ -1,5 +1,9 @@
 # IP-Adapter with negative image prompt (WIP)
-run `demo.ipynb` for a GUI. 
+run `demo.ipynb` for a GUI. [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/sagiodev/IP-Adapter-Negative/blob/main/demo.ipynb)
+
+![image](https://github.com/sagiodev/IP-Adapter-Negative/assets/3319909/a32218fb-3df3-42fd-95de-2d226d03aff5)
+
+
 
 
 # ___***IP-Adapter: Text Compatible Image Prompt Adapter for Text-to-Image Diffusion Models***___
