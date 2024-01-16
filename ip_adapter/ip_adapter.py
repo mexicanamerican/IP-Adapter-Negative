@@ -186,6 +186,8 @@ class IPAdapter:
 
         if pil_image is not None:
             num_prompts = 1 if isinstance(pil_image, Image.Image) else len(pil_image)
+        elif negative_pil_image:
+            num_prompts = 1 if isinstance(negative_pil_image, Image.Image) else len(negative_pil_image)
         else:
             num_prompts = clip_image_embeds.size(0)        
 
@@ -199,18 +201,34 @@ class IPAdapter:
         if not isinstance(negative_prompt, List):
             negative_prompt = [negative_prompt] * num_prompts
 
-        image_prompt_embeds, uncond_image_prompt_embeds = self.get_image_embeds(
-            pil_image=pil_image, clip_image_embeds=clip_image_embeds
-        )
-        bs_embed, seq_len, _ = image_prompt_embeds.shape
-        image_prompt_embeds = image_prompt_embeds.repeat(1, num_samples, 1)
-        image_prompt_embeds = image_prompt_embeds.view(bs_embed * num_samples, seq_len, -1)
-
-        if negative_pil_image is not None or negative_clip_image_embeds is not None:
-            print('use negative image')
+        if (pil_image or clip_image_embeds) and  not (negative_pil_image or negative_clip_image_embeds):
+            # positive image only
+            print('positive image')
+            image_prompt_embeds, uncond_image_prompt_embeds = self.get_image_embeds(
+                pil_image=pil_image, clip_image_embeds=clip_image_embeds
+            )
+        elif not (pil_image or clip_image_embeds) and (negative_pil_image or negative_clip_image_embeds):
+            # negative prompt only
+            print('negative image')
+            uncond_image_prompt_embeds, image_prompt_embeds = self.get_image_embeds(
+                pil_image=negative_pil_image, clip_image_embeds=negative_clip_image_embeds
+            )
+        elif (pil_image or clip_image_embeds) and (negative_pil_image or negative_clip_image_embeds):
+            # positive and negative images
+            print('positive and negative image')
+            image_prompt_embeds, uncond_image_prompt_embeds = self.get_image_embeds(
+                pil_image=pil_image, clip_image_embeds=clip_image_embeds
+            )            
             uncond_image_prompt_embeds, _ = self.get_image_embeds(
                 pil_image=negative_pil_image, clip_image_embeds=negative_clip_image_embeds
             )
+        else:
+            # No postive or negative images
+            NotImplementedError("")
+
+        bs_embed, seq_len, _ = image_prompt_embeds.shape
+        image_prompt_embeds = image_prompt_embeds.repeat(1, num_samples, 1)
+        image_prompt_embeds = image_prompt_embeds.view(bs_embed * num_samples, seq_len, -1)            
         uncond_image_prompt_embeds = uncond_image_prompt_embeds.repeat(1, num_samples, 1)
         uncond_image_prompt_embeds = uncond_image_prompt_embeds.view(bs_embed * num_samples, seq_len, -1)
 
