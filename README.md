@@ -1,9 +1,28 @@
-# IP-Adapter with negative image prompt (WIP)
+# IP-Adapter with a negative image prompt
 Experimental implementation of negative image prompt. An image embedding is used for the unconditioned embedding in the same way as the negative prompt.
 
+## Usage
 Run `demo.ipynb` for a GUI. [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/sagiodev/IP-Adapter-Negative/blob/main/demo.ipynb)
 
-![image](https://github.com/sagiodev/IP-Adapter-Negative/assets/3319909/a32218fb-3df3-42fd-95de-2d226d03aff5)
+You can specify any or all of the following
+- Text prompt
+- Image prompt
+- Negative text prompt
+- Negative image prompt
+
+It seems to behave the best when: 
+1. Supply a positive and a negative image prompt. Leave the text prompts empty.
+2. Supply a text prompt and a negative image prompt. Leave the image prompt empty.
+
+## Samples
+Cherry-picked examples 🤣
+
+![image](https://github.com/sagiodev/IP-Adapter-Negative/assets/3319909/ee07e920-e62b-41e7-9857-1fd896de00fb)
+
+![image](https://github.com/sagiodev/IP-Adapter-Negative/assets/3319909/534d36a2-7ccc-4ec6-8298-56d40d1321ba)
+
+![image](https://github.com/sagiodev/IP-Adapter-Negative/assets/3319909/b532b209-f372-4cf4-8d55-f17ade2e0595)
+
 
 ## IP-adapters
 Supports IP-adapter and IP-adapter Plus for SD 1.5
