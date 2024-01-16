@@ -15,7 +15,7 @@ It seems to behave the best when:
 2. Supply a text prompt and a negative image prompt. Leave the image prompt empty.
 
 ## Samples
-Cherry-picked examples 🤣
+Cherry-picked examples 🤣 (Positive and negative image prompts used.)
 
 ![image](https://github.com/sagiodev/IP-Adapter-Negative/assets/3319909/ee07e920-e62b-41e7-9857-1fd896de00fb)
 
