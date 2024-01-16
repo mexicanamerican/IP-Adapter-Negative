@@ -1,4 +1,4 @@
-# IP-Adapter with a negative image prompt
+# Stable Diffusion IP-Adapter with a negative image prompt
 Experimental implementation of negative image prompts. An image embedding is used for the unconditioned embedding in the same way as the negative prompt.
 
 ## Usage
