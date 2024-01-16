@@ -14,6 +14,8 @@ It seems to behave the best when:
 1. Supply a positive and a negative image prompt. Leave the text prompts empty.
 2. Supply a text prompt and a negative image prompt. Leave the image prompt empty.
 
+You will need to adjust the positive and negative prompt weight to get the desired effect.
+
 ## Samples
 Cherry-picked examples 🤣 (Positive and negative image prompts used.)
 
