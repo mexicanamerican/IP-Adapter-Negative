@@ -17,7 +17,7 @@ It seems to behave the best when:
 You will need to adjust the positive and negative prompt weight to get the desired effect.
 
 ## Samples
-Cherry-picked examples 🤣 (Positive and negative image prompts used.)
+Cherry-picked examples 🤣 (Positive and negative image prompts only. Text prompts not used.)
 
 ![image](https://github.com/sagiodev/IP-Adapter-Negative/assets/3319909/ee07e920-e62b-41e7-9857-1fd896de00fb)
 
