@@ -332,6 +332,7 @@ class IPAdapterXL(IPAdapter):
             pooled_prompt_embeds=pooled_prompt_embeds,
             negative_pooled_prompt_embeds=negative_pooled_prompt_embeds,
             num_inference_steps=num_inference_steps,
+            
             generator=generator,
             **kwargs,
         ).images
