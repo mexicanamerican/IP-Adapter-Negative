@@ -1,6 +1,8 @@
 # Stable Diffusion IP-Adapter with a negative image prompt
 Experimental implementation of negative image prompts. An image embedding is used for the unconditioned embedding in the same way as the negative prompt. Read the write-up [here](https://stable-diffusion-art.com/negative-image-prompt).
 
+Update: [ComfyUI version](https://github.com/sagiodev/ComfyUI_IPAdapter_plus)
+
 ## Usage
 Run `demo.ipynb` for a GUI. [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/sagiodev/IP-Adapter-Negative/blob/main/demo.ipynb)
 
